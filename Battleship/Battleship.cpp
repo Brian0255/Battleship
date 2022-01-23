@@ -76,7 +76,7 @@ void Battleship::startGame() {
 	ui.StatusLabel->setText("");
 	shipsRemaining = SHIP_START_AMOUNT;
 	clicksLeft = CLICK_START_AMOUNT;
-	ui.ShipsLeftLabel->setText("Ships: " + QString::number(shipsRemaining));
+	ui.ShipsLeftLabel->setText("Ships left: " + QString::number(shipsRemaining));
 	ui.ClicksLeftLabel->setText("Clicks left: " + QString::number(clicksLeft));
 	int max = tiles.size();
 	for (int size : shipLengths) {
@@ -156,7 +156,7 @@ void Battleship::calculateShipsRemaining() {
 	for (Ship ship : ships) {
 		shipsRemaining += (shipUncovered(ship)) ? 0 : 1;
 	}
-	ui.ShipsLeftLabel->setText("Ships remaining: " + QString::number(shipsRemaining));
+	ui.ShipsLeftLabel->setText("Ships left: " + QString::number(shipsRemaining));
 }
 
 bool Battleship::shipUncovered(Ship ship) {
