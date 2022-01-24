@@ -33,6 +33,7 @@ private:
     int shipsRemaining;
     std::vector<Ship> ships;
     std::array<int, 3> shipLengths{ 4,3,2 };
+    std::array<char, 12> shipLetters{'A','B','C','D','E','F','G','H','I','J','K','L' };
     std::array<std::array<Tile,10>,10> tiles;
     bool gameActive{ false };
     std::map<QPushButton*, std::array<int,2>> buttonCoords;
@@ -42,4 +43,5 @@ private:
     void createShip(std::string orientation, int size);
     void createHorizontalShip(int size);
     void createVerticalShip(int size);
+    void addShip(Ship& potentialShip);
 };

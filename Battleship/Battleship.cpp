@@ -3,6 +3,8 @@
 #include<QRegularExpression>
 #include<QMouseEvent>
 #include"QRightClickButton.h"
+#include<random>
+#include<chrono>
 
 const QString HIDDEN_TILE_COLOR{ "background-color: rgb(200,200,200);" };
 const QString HIDDEN_HOVER_COLOR{ "background-color: rgb(220,220,220);" };
@@ -17,6 +19,7 @@ const int GRID_SIZE{ 10 };
 Battleship::Battleship(QWidget* parent)
 	: QMainWindow(parent) {
 	ui.setupUi(this);
+	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
 	srand(time(0));
 	connect(ui.ResetButton, &QPushButton::clicked, this, &Battleship::resetButtonClick);
 
@@ -79,11 +82,14 @@ void Battleship::startGame() {
 	ui.ShipsLeftLabel->setText("Ships left: " + QString::number(shipsRemaining));
 	ui.ClicksLeftLabel->setText("Clicks left: " + QString::number(clicksLeft));
 	int max = tiles.size();
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::array<std::string, 4> orientations = { "horizontal","horizontal","vertical","vertical" };
+	shuffle(shipLetters.begin(), shipLetters.end(), std::default_random_engine(seed));
+	//shuffle ship letters so you can't deduce ship length/orientation from them
 	for (int size : shipLengths) {
-		createShip("horizontal", size);
-		createShip("horizontal", size);
-		createShip("vertical", size);
-		createShip("vertical", size);
+		for (std::string orientation : orientations) {
+			createShip(orientation, size);
+		}
 	}
 	setupTileShipCounts();
 }
@@ -207,7 +213,6 @@ void Battleship::createHorizontalShip(int size) {
 	int max = tiles.size();
 	int limit = max - size + 1;
 	bool valid{ false };
-	Ship ship;
 	while (!valid) {
 		int row = rand() % limit;
 		int col = rand() % max;
@@ -224,17 +229,9 @@ void Battleship::createHorizontalShip(int size) {
 			}
 		}
 		if (valid) {
-			char letter = 'A' + ships.size();
-			ship = potentialShip;
-			for (auto& coord : ship.coords) {
-				int row = coord[0];
-				int col = coord[1];
-				tiles[row][col].isShip = true;
-				tiles[row][col].letter = letter;
-			}
+			addShip(potentialShip);
 		}
 	}
-	ships.push_back(ship);
 }
 
 void Battleship::createVerticalShip(int size) {
@@ -259,17 +256,20 @@ void Battleship::createVerticalShip(int size) {
 			}
 		}
 		if (valid) {
-			char letter = 'A' + ships.size();
-			ship = potentialShip;
-			for (auto& coord : ship.coords) {
-				int row = coord[0];
-				int col = coord[1];
-				tiles[row][col].isShip = true;
-				tiles[row][col].letter = letter;
-			}
+			addShip(potentialShip);
 		}
 	}
-	ships.push_back(ship);
+}
+
+void Battleship::addShip(Ship& potentialShip) {
+	char letter = shipLetters[ships.size()];
+	for (auto& coord : potentialShip.coords) {
+		int row = coord[0];
+		int col = coord[1];
+		tiles[row][col].isShip = true;
+		tiles[row][col].letter = letter;
+	}
+	ships.push_back(potentialShip);
 }
 
 void Battleship::tileButtonPress() {
