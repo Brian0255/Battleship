@@ -97,6 +97,7 @@ void Battleship::revealTile(QPushButton* button) {
 	if (tiles[row][col].isShip) {
 		changeColor(button, HIT_PART_OF_SHIP_COLOR);
 	}
+	button->setEnabled(false);
 	button->removeEventFilter(this);
 	checkIfWin();
 }
@@ -117,9 +118,9 @@ void Battleship::resetGame() {
 	startGame();
 }
 
-void Battleship::gameOver(QPushButton* hit) {
+void Battleship::gameOver() {
 	ui.StatusLabel->setText("Game over!");
-	resetGame();
+	disableButtons();
 }
 
 void Battleship::disableButtons() {
@@ -287,6 +288,9 @@ void Battleship::tileButtonClick() {
 		ui.ClicksLeftLabel->setText("Clicks left: " + QString::number(clicksLeft));
 		revealTile(button);
 		checkIfWin();
+		if (clicksLeft == 0 && shipsRemaining > 0) {
+			gameOver();
+		}
 	}
 }
 

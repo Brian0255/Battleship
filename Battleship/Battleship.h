@@ -18,7 +18,7 @@ public:
     void startGame();
     void revealTile(QPushButton* button);
     void resetGame();
-    void gameOver(QPushButton*);
+    void gameOver();
     void checkIfWin();
     void disableButtons();
     void setupTileShipCounts();
