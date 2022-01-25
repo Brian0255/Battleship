@@ -7,6 +7,7 @@ private:
 	char letter;
 	bool hidden;
 	bool isShip;
+	bool crossedOff;
 	QPushButton* button;
 	int shipsIntersecting;
 public:

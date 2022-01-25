@@ -12,6 +12,7 @@ const QString HIDDEN_PRESS_COLOR{ "background-color: rgb(210,210,210);" };
 const QString UNCOVERED_COLOR{ "background-color: rgb(170,170,170);" };
 const QString HIT_SHIP_COLOR{ "background-color: rgb(220,0,0);" };
 const QString HIT_PART_OF_SHIP_COLOR{ "background-color: rgb(255,139,160);" };
+const QString CROSS_OFF_COLOR{ "background-color: rgb(100,100,100);" };
 const int SHIP_START_AMOUNT{ 12 };
 const int CLICK_START_AMOUNT{ 60 };
 const int GRID_SIZE{ 10 };
@@ -118,6 +119,7 @@ void Battleship::resetGame() {
 			tile->button->setText("");
 			tile->hidden = true;
 			tile->isShip = false;
+			tile->crossedOff = false;
 		}
 	}
 	ships.clear();
@@ -152,9 +154,18 @@ void Battleship::resetButtonClick() {
 void Battleship::tileRightClick() {
 	QPushButton* button = qobject_cast<QPushButton*>(sender());
 	std::array<int, 2> coords = buttonCoords.at(button);
-	Tile tile = tiles[coords[0]][coords[1]];
-	if (tile.hidden&&button->isEnabled()) {
-		button->setText((button->text() == "O") ? "" : "O");
+	Tile* tile = &tiles[coords[0]][coords[1]];
+	if (tile->hidden) {
+		if (!tile->crossedOff) {
+			changeColor(button, CROSS_OFF_COLOR);
+			tile->crossedOff = true;
+			button->removeEventFilter(this);
+		}
+		else {
+			changeColor(button, HIDDEN_TILE_COLOR);
+			tile->crossedOff = false;
+			button->installEventFilter(this);
+		}
 	}
 }
 

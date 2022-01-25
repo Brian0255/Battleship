@@ -2,7 +2,7 @@
 #include <qDebug>
 
 Tile::Tile(QPushButton* button) 
-    :hidden{ true }, isShip{ false }, shipsIntersecting{ 0 }, button{ button } {}
+    :hidden{ true }, isShip{ false }, shipsIntersecting{ 0 }, button{ button }, crossedOff{ false } {}
 
 Tile::Tile() {}
 
